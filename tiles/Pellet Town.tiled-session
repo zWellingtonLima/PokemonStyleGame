@@ -1,0 +1,94 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "boundaries.tmj",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
+        "://automap-tiles.tsx": {
+            "scaleInDock": 1
+        },
+        "MapPelletTown.tmx": {
+            "scale": 1,
+            "selectedLayer": 23,
+            "viewCenter": {
+                "x": 369,
+                "y": 242
+            }
+        },
+        "MapPelletTown.tmx#CollisionBottom": {
+            "dynamicWrapping": false
+        },
+        "MapPelletTown.tmx#Collisions": {
+            "dynamicWrapping": true
+        },
+        "MapPelletTown.tmx#collision": {
+            "scaleInEditor": 11
+        },
+        "Pokemon Style Game.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1.5,
+            "scaleInEditor": 1
+        },
+        "boundaries.tmj": {
+            "expandedGroupLayers": [
+                19
+            ],
+            "scale": 1,
+            "selectedLayer": 27,
+            "viewCenter": {
+                "x": 469.5,
+                "y": 300
+            }
+        },
+        "boundaries.tmj#CollisionBottom": {
+            "scaleInDock": 1
+        },
+        "boundaries.tmj#CollisionBottom2": {
+            "scaleInDock": 1
+        },
+        "boundaries.tmj#CollisionInclinedLeft": {
+            "scaleInDock": 1
+        },
+        "boundaries.tmj#CollisionTop": {
+            "scaleInDock": 1
+        },
+        "boundaries.tmj#preenchimento": {
+            "scaleInDock": 1
+        }
+    },
+    "last.exportedFilePath": "C:/Users/User/Desktop/Estudos Programação/Jogos/Pokemon Game - remasterizado/img",
+    "last.imagePath": "C:/Users/User/Downloads",
+    "map.height": 40,
+    "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
+    "map.lastUsedFormat": "json",
+    "map.tileHeight": 12,
+    "map.tileWidth": 12,
+    "map.width": 70,
+    "openFiles": [
+        "Pokemon Style Game.tsx",
+        "boundaries.tmj"
+    ],
+    "project": "Pellet Town.tiled-project",
+    "recentFiles": [
+        "Pokemon Style Game.tsx",
+        "boundaries.tmj",
+        "MapPelletTown.tmx"
+    ],
+    "resizeMap.removeObjects": false,
+    "tileset.embedInMap": true,
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.spacing": 0,
+    "tileset.tileSize": {
+        "height": 12,
+        "width": 12
+    },
+    "tileset.transparentColor": "#ff0004",
+    "tileset.type": 0,
+    "tileset.useTransparentColor": true
+}
