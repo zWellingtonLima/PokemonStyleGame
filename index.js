@@ -4,14 +4,60 @@ const c = canvas.getContext("2d");
 canvas.width = 1024
 canvas.height = 600
 
+//It's vital transform the json collision file into 2D array.
+const collisionsMap = []
+for(let i = 0; i < collisions.length; i += 85){
+  collisionsMap.push(collisions.slice(i, 85 + i))
+//85x50
+}
+
+class Boundary {
+  static width = 48
+  static height = 48
+  constructor({position}){
+    this.position = position
+    this.width = 48
+    this.height = 48 //These values are 48 cause our tiles have 12pixels wide but were zoomed in 400% (4 times). 12 x 4 = 48
+  }
+
+  draw(){
+    c.fillStyle = 'red'
+    c.fillRect(this.position.x, this.position.y, this.width, this.height)
+  }
+}
+
+const boundaryTest = new Boundary({
+  position: {
+    x: 500,
+    y: 400
+  }
+})
+
+const boundaries = []
+
+//Add a commom position to background and boundaries.
+const offSet = {
+  x: -492,
+  y: -910
+}
+
+collisionsMap.forEach((row, index) => {
+  row.forEach((symbol, index2) => {
+    if(symbol === 1026 || symbol === 2684355586  || symbol === 3221226498)
+    boundaries.push( new Boundary({
+      position: {
+        x: index2 * Boundary.width + offSet.x,
+        y: index * Boundary.height + offSet.y
+      }
+    }))
+  })
+})
+
 const backgroundImage = new Image()
 backgroundImage.src = './img/PelletTown.png'
 
 const playerImage = new Image()
 playerImage.src = './img/playerDown.png'
-
-// const boundarie = new Image
-// boundarie.src = './img/boundarie.png'
 
 // background.onload = () => { This method was used to load our image in canvas but was moved to animate function.
 // }
@@ -21,35 +67,51 @@ playerImage.src = './img/playerDown.png'
 class Sprite {
   constructor({
     position,
-    image
+    image,
+    frames = {max: 1}, //If our image are not a sprite, it should have 1 max frame
+    
   }){
     this.position = position
     this.image = image
+    this.frames = frames
+    this.image.onload = () => {
+      this.width = this.image.width / this.frames.max
+      this.height = this.image.height
+    }
   }
 
   draw(){
     c.drawImage(
-      this.image, 
+      this.image,
+      0,
+      0,
+      this.image.width / this.frames.max,
+      this.image.height,
       this.position.x, 
-      this.position.y
-      )
+      this.position.y,
+      this.image.width / this.frames.max,
+      this.image.height
+    )
   }
 }
 
 const backgroundMain = new Sprite({
   position: {
-    x: -492,
-    y: -910
+    x: offSet.x,
+    y: offSet.y
   },
   image: backgroundImage,
 })
 
 const playerSprite = new Sprite({
   position: {
-    x: '',
-    y: ''
+    x: canvas.width / 2 - 215 / 4 /2, // Center Player in the middle of the canvas. Static values are faster showed.
+    y: canvas.height / 2 - 69 / 4
   },
-  image: playerImage
+  image: playerImage,
+  frames: {
+    max: 4
+  }
 })
 
 const keys = {
@@ -70,31 +132,44 @@ const keys = {
   }
 }
 
-//This function creates an infinite loop to catch all frames and movements our player does. So, we need to move drawImage to the function.
+//It's easier to add one 'movable' here than add each new item movable inside if(key.pressed).
+const movables = [backgroundMain, boundaryTest]
+//Animate function creates an infinite loop to catch all frames and movements our player does. So, we need to move drawImage to the function.
+
 function animate(){
   window.requestAnimationFrame(animate) 
   backgroundMain.draw()
-    c.drawImage(
-      playerImage,
-      0,
-      0,
-      playerImage.width / 4,
-      playerImage.height,
-      canvas.width/2 - (playerImage.width / 4) /2, // Center Player in the middle of the canvas  
-      canvas.height/2 - playerImage.height /4,
-      playerImage.width / 4,
-      playerImage.height
-    )
+  // boundaries.forEach(boundary => {
+  //   boundary.draw()
+  // })
+  boundaryTest.draw()
+  playerSprite.draw()
+  
+//This if statement only works if player object exists. At first, we only drew our player using c.drawImage() method.
+  if(playerSprite.position.x + playerSprite.width >= boundaryTest.position.x &&
+    playerSprite.position.x + playerSprite.width <=  boundaryTest.position.x + boundaryTest.width){
+      console.log('colliding') 
+    }
+    
 
   if(keys.w.pressed && lastKey === 'w'){
-    backgroundMain.position.y += 3
+    movables.forEach((movable) => {
+      movable.position.y += 3
+    })
   } else if(keys.s.pressed && lastKey === 's'){
-    backgroundMain.position.y -= 3
+    movables.forEach((movable) => {
+      movable.position.y -= 3
+    })  
   } else if(keys.a.pressed && lastKey === 'a'){
-    backgroundMain.position.x += 3
+    movables.forEach((movable) => {
+      movable.position.x += 3
+    })
   } else if(keys.d.pressed && lastKey === 'd'){
-    backgroundMain.position.x -= 3
+    movables.forEach((movable) => {
+      movable.position.x -= 3
+    })
   } 
+  
 }
 animate()
 
