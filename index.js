@@ -11,20 +11,8 @@ for(let i = 0; i < collisions.length; i += 85){
 //85x50
 }
 
-class Boundary {
-  static width = 48
-  static height = 48
-  constructor({ position }){
-    this.position = position
-    this.width = 48
-    this.height = 48 //These values are 48 cause our tiles have 12pixels wide but were zoomed in 400% (4 times). 12 x 4 = 48
-  }
-
-  draw(){
-    c.fillStyle = 'red'
-    c.fillRect(this.position.x, this.position.y, this.width, this.height)
-  }
-}
+// background.onload = () => { At first, this method was used to load our image in canvas but it was moved to animate function.
+// }
 
 const boundaries = []
 
@@ -49,44 +37,17 @@ collisionsMap.forEach((row, index) => {
 const backgroundImage = new Image()
 backgroundImage.src = './img/PelletTown.png'
 
-const playerImage = new Image()
-playerImage.src = './img/playerDown.png'
+const foregroundImage = new Image()
+foregroundImage.src = './img/foreground.png'
 
-// background.onload = () => { This method was used to load our image in canvas but was moved to animate function.
-// }
-
-//classes ill be used because we going to create many diferents images. So, killing the need to create a lot of new variables with each propertie isolated like position.x, position.y frames etc.
-//Using an object as constructor's parameter its easier because I don't need to remember or check the order of it. 
-class Sprite {
-  constructor({
-    position,
-    image,
-    frames = {max: 1}, //If our image are not a sprite, it should have 1 max frame
-    
-  }){
-    this.position = position
-    this.image = image
-    this.frames = frames
-    this.image.onload = () => {
-      this.width = this.image.width / this.frames.max
-      this.height = this.image.height
-    }
-  }
-
-  draw(){
-    c.drawImage(
-      this.image,
-      0,
-      0,
-      this.image.width / this.frames.max,
-      this.image.height,
-      this.position.x, 
-      this.position.y,
-      this.image.width / this.frames.max,
-      this.image.height
-    )
-  }
-}
+const playerImageDown = new Image()
+playerImageDown.src = './img/playerDown.png'
+const playerImageUp = new Image()
+playerImageUp.src = './img/playerUp.png'
+const playerImageLeft = new Image()
+playerImageLeft.src = './img/playerLeft.png'
+const playerImageRight = new Image()
+playerImageRight.src = './img/playerRight.png'
 
 const backgroundMain = new Sprite({
   position: {
@@ -96,14 +57,28 @@ const backgroundMain = new Sprite({
   image: backgroundImage,
 })
 
+const foreground = new Sprite({
+  position: {
+    x: offSet.x,
+    y: offSet.y
+  },
+  image: foregroundImage
+})
+
 const playerSprite = new Sprite({
   position: {
     x: canvas.width / 2 - 215 / 4 /2, // Center Player in the middle of the canvas. Static values are faster showed.
     y: canvas.height / 2 - 69 / 4
   },
-  image: playerImage,
+  image: playerImageDown,
   frames: {
     max: 4
+  },
+  sprites: {
+    down: playerImageDown,
+    up: playerImageUp,
+    left: playerImageLeft,
+    right: playerImageRight
   }
 })
 
@@ -126,7 +101,7 @@ const keys = {
 }
 
 //It's easier to add one 'movable' here than add each new item movable inside if(key.pressed).
-const movables = [backgroundMain, ...boundaries]
+const movables = [backgroundMain, ...boundaries, foreground]
 //Animate function creates an infinite loop to catch all frames and movements our player does. So, we need to move drawImage to the function.
 function rectangularCollision({rectangle1, rectangle2 }){
   return (
@@ -143,11 +118,15 @@ function animate(){
     boundary.draw()
   })
   playerSprite.draw()
+  foreground.draw()
   
 //This if statement only works if player object exists. At first, we only drew our player using c.drawImage() method.
 
   let moving = true
+  playerSprite.moving = false
   if(keys.w.pressed && lastKey === 'w'){
+    playerSprite.moving = true
+    playerSprite.image = playerSprite.sprites.up
     for (let i = 0; i < boundaries.length; i++) {
       const boundary = boundaries[i]
       if(
@@ -170,6 +149,8 @@ function animate(){
       movable.position.y += 3
     })
   } else if(keys.s.pressed && lastKey === 's'){
+    playerSprite.moving = true
+    playerSprite.image = playerSprite.sprites.down
     for (let i = 0; i < boundaries.length; i++) {
       const boundary = boundaries[i]
       if(
@@ -192,6 +173,8 @@ function animate(){
       movable.position.y -= 3
     })  
   } else if(keys.a.pressed && lastKey === 'a'){
+    playerSprite.moving = true
+    playerSprite.image = playerSprite.sprites.left
     for (let i = 0; i < boundaries.length; i++) {
       const boundary = boundaries[i]
       if(
@@ -214,6 +197,8 @@ function animate(){
       movable.position.x += 3
     })
   } else if(keys.d.pressed && lastKey === 'd'){
+    playerSprite.moving = true
+    playerSprite.image = playerSprite.sprites.right
     for (let i = 0; i < boundaries.length; i++) {
       const boundary = boundaries[i]
       if(

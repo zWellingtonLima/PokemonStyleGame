@@ -1,0 +1,14 @@
+body{
+  background-color: black;
+  margin: 0;
+}
+
+canvas{
+  background-color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+  cursor: url(../img/pokebola.png), default;
+}
