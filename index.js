@@ -8,7 +8,12 @@ canvas.height = 600
 const collisionsMap = []
 for(let i = 0; i < collisions.length; i += 85){
   collisionsMap.push(collisions.slice(i, 85 + i))
-//85x50
+//85width x 50height are my map dimensions created on Tiled.
+}
+
+const battleZonesMap = []
+for(let i = 0; i < battleZonesData.length; i += 85){
+  battleZonesMap.push(battleZonesData.slice(i, 85 + i))
 }
 
 // background.onload = () => { At first, this method was used to load our image in canvas but it was moved to animate function.
@@ -34,6 +39,19 @@ collisionsMap.forEach((row, index) => {
   })
 })
 
+const battleZones = []
+battleZonesMap.forEach((row, index) => {
+  row.forEach((symbol, index2) => {
+    if(symbol === 376 ||symbol ===  312 ||symbol ===  343 ||symbol ===  340 || symbol === 345)
+    battleZones.push( new Boundary({
+      position: {
+        x: index2 * Boundary.width + offSet.x,
+        y: index * Boundary.height + offSet.y - 55 
+      }
+    }))
+  })
+})
+
 const backgroundImage = new Image()
 backgroundImage.src = './img/PelletTown.png'
 
@@ -48,6 +66,9 @@ const playerImageLeft = new Image()
 playerImageLeft.src = './img/playerLeft.png'
 const playerImageRight = new Image()
 playerImageRight.src = './img/playerRight.png'
+
+const bulbasaurImageDown = new Image()
+bulbasaurImageDown.src = './img/bulbasaurSpriteDown.png'
 
 const backgroundMain = new Sprite({
   position: {
@@ -82,6 +103,17 @@ const playerSprite = new Sprite({
   }
 })
 
+const bulbasaurSprite = new Sprite({
+  position: {
+    x: canvas.width / 2 - 215 / 4 /2, // Center Player in the middle of the canvas. Static values are faster showed.
+    y: 550
+  },
+  image: bulbasaurImageDown,
+  frames: {
+    max: 4
+  }
+})
+
 const keys = {
   w: {
     pressed: false
@@ -101,7 +133,7 @@ const keys = {
 }
 
 //It's easier to add one 'movable' here than add each new item movable inside if(key.pressed).
-const movables = [backgroundMain, ...boundaries, foreground]
+const movables = [backgroundMain, ...boundaries, foreground, bulbasaurSprite, ...battleZones]
 //Animate function creates an infinite loop to catch all frames and movements our player does. So, we need to move drawImage to the function.
 function rectangularCollision({rectangle1, rectangle2 }){
   return (
@@ -111,19 +143,63 @@ function rectangularCollision({rectangle1, rectangle2 }){
     rectangle1.position.y + 25 <= rectangle2.position.y + rectangle2.height
   )
 }
+
+const battle = {
+  initiated: false
+}
+
 function animate(){
   window.requestAnimationFrame(animate) 
   backgroundMain.draw()
   boundaries.forEach(boundary => {
     boundary.draw()
   })
+  battleZones.forEach(boundary => {
+    boundary.draw()
+  })
+  bulbasaurSprite.draw()
   playerSprite.draw()
   foreground.draw()
   
-//This if statement only works if player object exists. At first, we only drew our player using c.drawImage() method.
-
   let moving = true
   playerSprite.moving = false
+//A optimized way to do this is copy in each key.pressed individually. 
+//Activate a battle
+if(battle.initiated) return
+  if(keys.w.pressed || keys.s.pressed || keys.d.pressed || keys.a.pressed){
+    for (let i = 0; i < battleZones.length; i++) {
+      const battleZone = battleZones[i]
+      const overlappingArea = 
+      (Math.min(playerSprite.position.x + playerSprite.width, battleZone.position.x + battleZone.width) -
+      Math.max(playerSprite.position.x, battleZone.position.x)) *
+      (Math.min(playerSprite.position.y + playerSprite.height, battleZone.position.y + battleZone.height) -
+      Math.max(playerSprite.position.y, battleZone.position.y))
+      if(
+        rectangularCollision({
+        rectangle1: playerSprite,
+        rectangle2: battleZone
+      }) &&
+      overlappingArea > (playerSprite.width * playerSprite.height) / 2
+      &&
+      Math.random() > .98
+      ){
+        battle.initiated = true
+          gsap.to('#battleTransitionBlack', {
+            opacity: 1,
+            repeat: 4,
+            yoyo: true,
+            duration: 0.4,
+            onComplete(){
+              //activate a new animation loop
+              //deactivate current animation loop
+            }
+          })
+        break
+        } 
+    }
+  }
+
+//This if statement only works if player object exists. At first, we only drew our player using c.drawImage() method.
   if(keys.w.pressed && lastKey === 'w'){
     playerSprite.moving = true
     playerSprite.image = playerSprite.sprites.up
