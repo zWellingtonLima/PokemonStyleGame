@@ -5,16 +5,33 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- <link rel="shortcut icon" href="./img/favicon.png" type="image/x-icon"> -->
-  <title>Pokemon Game</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <title>Pokemon Game</title>
   <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
   
   <div id="container">
     <div id="battleTransitionBlack"></div>
+
+    <div id="enemyHealthBar">
+      <h1>Draggle</h1>
+      <div style="position: relative;">
+        <div id="grayHealthBar"></div>
+        <div id="greenHealthBar"></div>
+      </div>
+    </div>
+
+    <div id="playerHealthBar">
+      <h1>Emby</h1>
+      <div style="position: relative;">
+        <div id="grayHealthBar"></div>
+        <div id="greenHealthBar"></div>
+      </div>
+    </div>
+
     <canvas></canvas>
     
     <div id="containerBattleInterface">

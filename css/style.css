@@ -31,6 +31,45 @@ h1{
   z-index: 2;
 }
 
+#enemyHealthBar{
+  background-color: white;
+  width: 250px;
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  padding: 10px;
+  border: 4px solid black;
+  border-radius: 10px;
+}
+
+#playerHealthBar{
+  background-color: white;
+  width: 250px;
+  position: absolute;
+  top: 330px;
+  left: 690px;
+  padding: 10px;
+  border: 4px solid black;
+  border-radius: 10px;
+}
+
+#greenHealthBar{
+  background-color: rgb(23, 206, 23);
+  border-radius: 10px;
+  height: 7px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+#grayHealthBar{
+  background-color: rgb(184, 184, 184);
+  border-radius: 10px;
+  height: 7px; 
+  margin-top: 10px; 
+}
+
   canvas{
   /* position: absolute;
    top: 50%; 
@@ -67,7 +106,7 @@ button{
 }
 
 button:hover{
-  background-color: #eee;
+  background-color: rgb(219, 235, 243);
 }
 
 #attackType{
