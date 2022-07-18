@@ -2,7 +2,7 @@ const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
 
 canvas.width = 1024
-canvas.height = 600
+canvas.height = 576
 
 //It's vital transform the json collision file into 2D array.
 const collisionsMap = []
@@ -93,14 +93,16 @@ const playerSprite = new Sprite({
   },
   image: playerImageDown,
   frames: {
-    max: 4
+    max: 4,
+    speed: 10
   },
   sprites: {
     down: playerImageDown,
     up: playerImageUp,
     left: playerImageLeft,
     right: playerImageRight
-  }
+  },
+  animate: true
 })
 
 const bulbasaurSprite = new Sprite({
@@ -111,7 +113,8 @@ const bulbasaurSprite = new Sprite({
   image: bulbasaurImageDown,
   frames: {
     max: 4
-  }
+  },
+  animate: true
 })
 
 const keys = {
@@ -149,7 +152,7 @@ const battle = {
 }
 
 function animate(){
-  window.requestAnimationFrame(animate) 
+  const animationId = window.requestAnimationFrame(animate) 
   backgroundMain.draw()
   boundaries.forEach(boundary => {
     boundary.draw()
@@ -162,7 +165,7 @@ function animate(){
   foreground.draw()
   
   let moving = true
-  playerSprite.moving = false
+  playerSprite.animate = false
 //A optimized way to do this is copy in each key.pressed individually. 
 //Activate a battle
 if(battle.initiated) return
@@ -181,17 +184,29 @@ if(battle.initiated) return
       }) &&
       overlappingArea > (playerSprite.width * playerSprite.height) / 2
       &&
-      Math.random() > .98
+      Math.random() > .5
       ){
+        window.cancelAnimationFrame(animationId)
+       //deactivate current animation loop
         battle.initiated = true
           gsap.to('#battleTransitionBlack', {
             opacity: 1,
-            repeat: 4,
+            repeat: 3,
             yoyo: true,
             duration: 0.4,
             onComplete(){
-              //activate a new animation loop
-              //deactivate current animation loop
+              gsap.to('#battleTransitionBlack', {
+                opacity: 1,
+                duration: .4,
+                onComplete(){
+                  //activate a new animation loop
+                  animateBattle()
+                  gsap.to('#battleTransitionBlack', {
+                    opacity: 0,
+                    duration: .4
+                  })
+                }
+              })
             }
           })
         break
@@ -201,7 +216,7 @@ if(battle.initiated) return
 
 //This if statement only works if player object exists. At first, we only drew our player using c.drawImage() method.
   if(keys.w.pressed && lastKey === 'w'){
-    playerSprite.moving = true
+    playerSprite.animate = true
     playerSprite.image = playerSprite.sprites.up
     for (let i = 0; i < boundaries.length; i++) {
       const boundary = boundaries[i]
@@ -225,7 +240,7 @@ if(battle.initiated) return
       movable.position.y += 3
     })
   } else if(keys.s.pressed && lastKey === 's'){
-    playerSprite.moving = true
+    playerSprite.animate = true
     playerSprite.image = playerSprite.sprites.down
     for (let i = 0; i < boundaries.length; i++) {
       const boundary = boundaries[i]
@@ -249,7 +264,7 @@ if(battle.initiated) return
       movable.position.y -= 3
     })  
   } else if(keys.a.pressed && lastKey === 'a'){
-    playerSprite.moving = true
+    playerSprite.animate = true
     playerSprite.image = playerSprite.sprites.left
     for (let i = 0; i < boundaries.length; i++) {
       const boundary = boundaries[i]
@@ -273,7 +288,7 @@ if(battle.initiated) return
       movable.position.x += 3
     })
   } else if(keys.d.pressed && lastKey === 'd'){
-    playerSprite.moving = true
+    playerSprite.animate = true
     playerSprite.image = playerSprite.sprites.right
     for (let i = 0; i < boundaries.length; i++) {
       const boundary = boundaries[i]
@@ -299,7 +314,55 @@ if(battle.initiated) return
   } 
   
 }
-animate()
+//animate()
+
+const battleBackgroundImage  = new Image()
+battleBackgroundImage.src = './img/battleBackground.png'
+const battleBackground = new Sprite({
+  position: {
+    x: 0,
+    y: 0
+  },
+  image: battleBackgroundImage,
+})
+
+const embyImage = new Image()
+embyImage.src = './img/embySprite.png'
+const emby = new Sprite({
+  position: {
+    x: 290,
+    y: 340
+  },
+  image: embyImage,
+  frames: {
+    max: 4,
+    speed: 30
+  }, 
+  animate: true
+})
+
+const draggleImage = new Image()
+draggleImage.src = './img/draggleSprite.png'
+const draggle = new Sprite({
+  position: {
+    x: 800,
+    y: 100
+  },
+  image: draggleImage,
+  frames: {
+    max: 4,
+    speed: 30
+  },
+  animate: true
+})
+
+function animateBattle(){
+  requestAnimationFrame(animateBattle)
+  battleBackground.draw()
+  emby.draw()
+  draggle.draw()
+}
+animateBattle()
 
 let lastKey = ''
 //Player movement using Window E-listener

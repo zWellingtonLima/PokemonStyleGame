@@ -5,8 +5,9 @@ class Sprite {
   constructor({
     position,
     image,
-    frames = {max: 1}, //If our image are not a sprite, it should have 1 max frame
-    sprites
+    frames = {max: 1, speed: 10}, //If our image are not a sprite, it should have 1 max frame
+    sprites,
+    animate = false
   }){
     this.position = position
     this.image = image
@@ -16,7 +17,7 @@ class Sprite {
       this.height = this.image.height
     }
     this.sprites = sprites
-    this.moving = false
+    this.animate = animate
   }
 
   draw(){
@@ -32,12 +33,12 @@ class Sprite {
       this.image.height
     )
 
-    if(!this.moving) return //If our player isn't moving, return. This is another way instead put all beneath code inside curly brackets.
+    if(!this.animate) return //If our player isn't moving, return. This is another way instead put all beneath code inside curly brackets.
     if(this.frames.max > 1){
       this.frames.elapsed++
     }
 
-    if(this.frames.elapsed % 10 === 0){
+    if(this.frames.elapsed % this.frames.speed === 0){
       if(this.frames.val < this.frames.max - 1) this.frames.val++
       else this.frames.val = 0
     } 
