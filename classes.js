@@ -8,7 +8,8 @@ class Sprite {
     frames = {max: 1, speed: 10}, //If our image are not a sprite, it should have 1 max frame
     sprites,
     animate = false,
-    isEnemy = false
+    isEnemy = false,
+    rotation = 0
   }){
     this.position = position
     this.image = image
@@ -22,10 +23,20 @@ class Sprite {
     this.opacity = 1
     this.health = 100
     this.isEnemy = isEnemy
+    this.rotation = rotation
   }
 
   draw(){
     c.save()
+    c.translate(
+      this.position.x + this.width /2,
+      this.position.y + this.height /2,
+    )
+    c.rotate(this.rotation)
+    c.translate(
+      -this.position.x - this.width /2,
+      -this.position.y - this.height /2,
+    )
     c.globalAlpha = this.opacity
     c.drawImage(
       this.image,
@@ -51,48 +62,107 @@ class Sprite {
     } 
   }
   //If I need to create animation in succession directly after one but not at the same time I have to use gsap timeline.
-  attack({ attack, recipient }){
+  attack({ attack, recipient, renderedSprites }){
     this.health -= attack.damage
-    let movementDistance = 20
-    if(this.isEnemy) movementDistance = -20
+
     let whosHealthbar = '#enemyGreenHealthBar'
     if(this.isEnemy) whosHealthbar = '#playerGreenHealthBar'
 
-    const tl = gsap.timeline()
-    tl.to(this.position, {
-      x: this.position.x - movementDistance
-    }).to(this.position, {
-      x: this.position.x + movementDistance * 2,
-      duration: .15,
-      onComplete: () => {
-      //Enemy actually gets hit
-      gsap.to(whosHealthbar, {
-        width: this.health + '%'
-      })
+    switch(attack.name) {
+      case 'Fireball':
+        let rotation = 1.5
+        if(this.isEnemy) rotation = -2.5
+        const fireballImage = new Image()
+        fireballImage.src = './img/fireball.png'
+        const fireball = new Sprite({
+          position:{
+            x: this.position.x,
+            y: this.position.y
+          },
+          image: fireballImage,
+          frames: {
+            max: 4,
+            speed: 10
+          },
+          animate: true,
+          rotation
+        })
+        renderedSprites.splice(1, 0, fireball)
 
-      gsap.to(recipient.position, {
-        x: recipient.position.x + 10,
-        yoyo: true,
-        repeat: 6,
-        duration: .07,
-        onComplete: () => {
-          gsap.to(recipient.position, {
-            x: recipient.position.x - 10,
-            duration: .05
+        gsap.to(fireball.position, {
+          x: recipient.position.x,
+          y: recipient.position.y,
+          onComplete: () => {
+            //Enemy actually gets hit
+            gsap.to(whosHealthbar, {
+              width: this.health + '%'
+           })
+    
+            gsap.to(recipient.position, {
+            x: recipient.position.x + 10,
+            yoyo: true,
+            repeat: 6,
+            duration: .07,
+              onComplete: () => {
+                gsap.to(recipient.position, {
+                  x: recipient.position.x - 10,
+                  duration: .05
+                })
+              }
+          })
+            gsap.to(recipient, {
+            opacity: 0,
+            repeat: 5,
+            duration: .08,
+            yoyo: true,
+            })
+            //This splice removes fireball sprite after the animation.
+            renderedSprites.splice(1, 1)
+          }
+        })
+
+        break
+
+      case 'Tackle':
+        let movementDistance = 20
+        if(this.isEnemy) movementDistance = -20
+        const tl = gsap.timeline()
+        tl.to(this.position, {
+          x: this.position.x - movementDistance
+        }).to(this.position, {
+          x: this.position.x + movementDistance * 2,
+          duration: .15,
+            onComplete: () => {
+            //Enemy actually gets hit
+            gsap.to(whosHealthbar, {
+              width: this.health + '%'
+            })
+    
+            gsap.to(recipient.position, {
+            x: recipient.position.x + 10,
+            yoyo: true,
+            repeat: 6,
+            duration: .07,
+              onComplete: () => {
+                gsap.to(recipient.position, {
+                  x: recipient.position.x - 10,
+                  duration: .05
+                })
+              }
+          })
+          gsap.to(recipient, {
+            opacity: 0,
+            repeat: 5,
+            duration: .08,
+            yoyo: true,
           })
         }
-      })
-      gsap.to(recipient, {
-        opacity: 0,
-        repeat: 5,
-        duration: .08,
-        yoyo: true,
-      })
+        }).to(this.position, {
+          x: this.position.x
+        })
+        break
+      }
     }
-    }).to(this.position, {
-      x: this.position.x
-    })
-  }
 }
 
 class Boundary {

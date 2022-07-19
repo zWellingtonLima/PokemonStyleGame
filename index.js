@@ -315,20 +315,17 @@ if(battle.initiated) return
   
 }
 
+//Our event listeners for our buttons (attack)
 document.querySelectorAll('button').forEach(button => {
-  button.addEventListener('click', () => {
-    emby.attack({
-      attack: {
-        name: 'Tackle',
-        damage: 10,
-        type: 'Normal'
-      },
-      recipient: draggle
+  button.addEventListener('click', (e) => {
+    //This way is faster than loop an array because it chooses directly inside the attacks object why I'm looking for after clicking on attack button.
+    const selectedAttack = attacks[e.currentTarget.innerHTML]
+    draggle.attack({
+      attack: selectedAttack,
+      recipient: emby,
+      renderedSprites
     })
   })
-})
-window.addEventListener('click', () => {
-
 })
 
 const battleBackgroundImage  = new Image()
@@ -372,11 +369,15 @@ const draggle = new Sprite({
   isEnemy: true
 })
 
+// To put fireball behind emby changing the z-index through array methods.
+const renderedSprites = [draggle, emby]
 function animateBattle(){
   requestAnimationFrame(animateBattle)
   battleBackground.draw()
-  emby.draw()
-  draggle.draw()
+
+  renderedSprites.forEach((sprite) => {
+    sprite.draw()
+  })
 }
 
 let lastKey = ''
