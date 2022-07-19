@@ -79,6 +79,18 @@ h1{
   cursor: url(../img/pokebola.png), default;
 } 
 
+#battleDialogueBox{
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  background-color: white;
+  padding: 15px;
+  display: none;
+  cursor: url(../img/pokebola1.png), default;
+}
+
 #containerBattleInterface{
   background-color: rgb(255, 255, 255);
   position: absolute;

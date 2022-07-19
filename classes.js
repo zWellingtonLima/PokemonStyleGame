@@ -9,7 +9,8 @@ class Sprite {
     sprites,
     animate = false,
     isEnemy = false,
-    rotation = 0
+    rotation = 0,
+    name
   }){
     this.position = position
     this.image = image
@@ -24,6 +25,7 @@ class Sprite {
     this.health = 100
     this.isEnemy = isEnemy
     this.rotation = rotation
+    this.name = name
   }
 
   draw(){
@@ -63,6 +65,9 @@ class Sprite {
   }
   //If I need to create animation in succession directly after one but not at the same time I have to use gsap timeline.
   attack({ attack, recipient, renderedSprites }){
+    document.querySelector('#battleDialogueBox').style.display = 'block'
+    document.querySelector('#battleDialogueBox').innerHTML = `${this.name} usou ${attack.name} e causou ${attack.damage} de dano.` 
+
     this.health -= attack.damage
 
     let whosHealthbar = '#enemyGreenHealthBar'

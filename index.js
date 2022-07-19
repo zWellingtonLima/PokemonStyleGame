@@ -315,71 +315,6 @@ if(battle.initiated) return
   
 }
 
-//Our event listeners for our buttons (attack)
-document.querySelectorAll('button').forEach(button => {
-  button.addEventListener('click', (e) => {
-    //This way is faster than loop an array because it chooses directly inside the attacks object why I'm looking for after clicking on attack button.
-    const selectedAttack = attacks[e.currentTarget.innerHTML]
-    draggle.attack({
-      attack: selectedAttack,
-      recipient: emby,
-      renderedSprites
-    })
-  })
-})
-
-const battleBackgroundImage  = new Image()
-battleBackgroundImage.src = './img/battleBackground.png'
-const battleBackground = new Sprite({
-  position: {
-    x: 0,
-    y: 0
-  },
-  image: battleBackgroundImage,
-})
-
-const embyImage = new Image()
-embyImage.src = './img/embySprite.png'
-const emby = new Sprite({
-  position: {
-    x: 290,
-    y: 340
-  },
-  image: embyImage,
-  frames: {
-    max: 4,
-    speed: 30
-  }, 
-  animate: true
-})
-
-const draggleImage = new Image()
-draggleImage.src = './img/draggleSprite.png'
-const draggle = new Sprite({
-  position: {
-    x: 800,
-    y: 100
-  },
-  image: draggleImage,
-  frames: {
-    max: 4,
-    speed: 30
-  },
-  animate: true,
-  isEnemy: true
-})
-
-// To put fireball behind emby changing the z-index through array methods.
-const renderedSprites = [draggle, emby]
-function animateBattle(){
-  requestAnimationFrame(animateBattle)
-  battleBackground.draw()
-
-  renderedSprites.forEach((sprite) => {
-    sprite.draw()
-  })
-}
-
 let lastKey = ''
 //Player movement using Window E-listener
 //Whenever we key down we want to call whatever code is within the Arrow Function
@@ -406,9 +341,7 @@ window.addEventListener('keydown', (e) => {
       break
   }
 })
-
 //animate()
-animateBattle()
 
 //It's necessary put back on keys up to false when they're released.
 window.addEventListener('keyup', (e) => {
