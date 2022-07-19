@@ -167,7 +167,7 @@ function animate(){
   let moving = true
   playerSprite.animate = false
 //A optimized way to do this is copy in each key.pressed individually. 
-//Activate a battle
+// Activate a battle
 if(battle.initiated) return
   if(keys.w.pressed || keys.s.pressed || keys.d.pressed || keys.a.pressed){
     for (let i = 0; i < battleZones.length; i++) {
@@ -314,7 +314,22 @@ if(battle.initiated) return
   } 
   
 }
-//animate()
+
+document.querySelectorAll('button').forEach(button => {
+  button.addEventListener('click', () => {
+    emby.attack({
+      attack: {
+        name: 'Tackle',
+        damage: 10,
+        type: 'Normal'
+      },
+      recipient: draggle
+    })
+  })
+})
+window.addEventListener('click', () => {
+
+})
 
 const battleBackgroundImage  = new Image()
 battleBackgroundImage.src = './img/battleBackground.png'
@@ -353,7 +368,8 @@ const draggle = new Sprite({
     max: 4,
     speed: 30
   },
-  animate: true
+  animate: true,
+  isEnemy: true
 })
 
 function animateBattle(){
@@ -362,7 +378,6 @@ function animateBattle(){
   emby.draw()
   draggle.draw()
 }
-animateBattle()
 
 let lastKey = ''
 //Player movement using Window E-listener
@@ -390,6 +405,9 @@ window.addEventListener('keydown', (e) => {
       break
   }
 })
+
+//animate()
+animateBattle()
 
 //It's necessary put back on keys up to false when they're released.
 window.addEventListener('keyup', (e) => {

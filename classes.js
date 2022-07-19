@@ -7,7 +7,8 @@ class Sprite {
     image,
     frames = {max: 1, speed: 10}, //If our image are not a sprite, it should have 1 max frame
     sprites,
-    animate = false
+    animate = false,
+    isEnemy = false
   }){
     this.position = position
     this.image = image
@@ -18,9 +19,14 @@ class Sprite {
     }
     this.sprites = sprites
     this.animate = animate
+    this.opacity = 1
+    this.health = 100
+    this.isEnemy = isEnemy
   }
 
   draw(){
+    c.save()
+    c.globalAlpha = this.opacity
     c.drawImage(
       this.image,
       this.frames.val * this.width,
@@ -32,6 +38,7 @@ class Sprite {
       this.image.width / this.frames.max,
       this.image.height
     )
+    c.restore()
 
     if(!this.animate) return //If our player isn't moving, return. This is another way instead put all beneath code inside curly brackets.
     if(this.frames.max > 1){
@@ -42,6 +49,49 @@ class Sprite {
       if(this.frames.val < this.frames.max - 1) this.frames.val++
       else this.frames.val = 0
     } 
+  }
+  //If I need to create animation in succession directly after one but not at the same time I have to use gsap timeline.
+  attack({ attack, recipient }){
+    this.health -= attack.damage
+    let movementDistance = 20
+    if(this.isEnemy) movementDistance = -20
+    let whosHealthbar = '#enemyGreenHealthBar'
+    if(this.isEnemy) whosHealthbar = '#playerGreenHealthBar'
+
+    const tl = gsap.timeline()
+    tl.to(this.position, {
+      x: this.position.x - movementDistance
+    }).to(this.position, {
+      x: this.position.x + movementDistance * 2,
+      duration: .15,
+      onComplete: () => {
+      //Enemy actually gets hit
+      gsap.to(whosHealthbar, {
+        width: this.health + '%'
+      })
+
+      gsap.to(recipient.position, {
+        x: recipient.position.x + 10,
+        yoyo: true,
+        repeat: 6,
+        duration: .07,
+        onComplete: () => {
+          gsap.to(recipient.position, {
+            x: recipient.position.x - 10,
+            duration: .05
+          })
+        }
+      })
+      gsap.to(recipient, {
+        opacity: 0,
+        repeat: 5,
+        duration: .08,
+        yoyo: true,
+      })
+    }
+    }).to(this.position, {
+      x: this.position.x
+    })
   }
 }
 

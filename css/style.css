@@ -53,7 +53,7 @@ h1{
   border-radius: 10px;
 }
 
-#greenHealthBar{
+#enemyGreenHealthBar, #playerGreenHealthBar{
   background-color: rgb(23, 206, 23);
   border-radius: 10px;
   height: 7px;
@@ -63,7 +63,7 @@ h1{
   bottom: 0;
 }
 
-#grayHealthBar{
+#enemyGrayHealthBar, #playerGrayHealthBar{
   background-color: rgb(184, 184, 184);
   border-radius: 10px;
   height: 7px; 
