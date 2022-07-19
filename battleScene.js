@@ -16,11 +16,59 @@ const draggle = new Pokemons(pokemons.Draggle)
 const renderedSprites = [draggle, emby]
 
 //Creates a versatile button generator using the data associate with each attack that pokemon may have.
-
 emby.attacks.forEach((attack) => {
   const button = document.createElement('button')
   button.innerHTML = attack.name
   document.querySelector('#attacksMenu').append(button)
+})
+
+const queue = []
+
+//Our event listeners for our buttons (attack)
+document.querySelectorAll('button').forEach((button) => {
+  button.addEventListener('click', (e) => {
+    //This way is faster than loop an array because it chooses directly inside the attacks object why I'm looking for after clicking on attack button.
+    const selectedAttack = attacks[e.currentTarget.innerHTML]
+    emby.attack({
+      attack: selectedAttack,
+      recipient: draggle,
+      renderedSprites
+    })
+
+    if(draggle.health <= 0){
+      queue.push(() => {
+        draggle.faint()
+      })
+    }
+
+    //Enemy Ramdom Attack here
+    const randomAttack = draggle.attacks[Math.floor(Math.random() * draggle.attacks.length)]
+
+    queue.push(() => {
+        draggle.attack({
+        attack: randomAttack,
+        recipient: emby,
+        renderedSprites
+      })
+    })
+
+    if(emby.health <= 0){
+      queue.push(() => {
+        emby.faint()
+      })
+    }
+  })
+
+  button.addEventListener('mouseenter', (e) => {
+    const selectedAttack = attacks[e.currentTarget.innerHTML]
+    document.querySelector('#attackTypeText').innerHTML = selectedAttack.type
+    document.querySelector('#attackTypeText').style.color = selectedAttack.color
+  })
+
+  button.addEventListener('mouseleave', () => {
+    document.querySelector('#attackTypeText').innerHTML = 'Attack Type'
+    document.querySelector('#attackTypeText').style.color = 'black'
+  })
 })
 
 function animateBattle(){
@@ -32,8 +80,6 @@ function animateBattle(){
   })
 }
 
-
-const queue = []
 //To hide our dialogueBox after show battle message.
 document.querySelector('#battleDialogueBox').addEventListener('click', (e) => {
   if(queue.length > 0){
@@ -42,26 +88,7 @@ document.querySelector('#battleDialogueBox').addEventListener('click', (e) => {
   } else e.currentTarget.style.display = 'none'
 })
 
-//Our event listeners for our buttons (attack)
-document.querySelectorAll('button').forEach(button => {
-  button.addEventListener('click', (e) => {
-    //This way is faster than loop an array because it chooses directly inside the attacks object why I'm looking for after clicking on attack button.
-    const selectedAttack = attacks[e.currentTarget.innerHTML]
-    emby.attack({
-      attack: selectedAttack,
-      recipient: draggle,
-      renderedSprites
-    })
 
-    queue.push(() => {
-        draggle.attack({
-        attack: attacks.Tackle,
-        recipient: emby,
-        renderedSprites
-      })
-    })
-  })
-})
 
 animateBattle()
 // const battleDialogueBox = document.querySelector('#battleDialogueBox')

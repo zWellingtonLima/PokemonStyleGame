@@ -86,12 +86,22 @@ constructor({
   this.attacks = attacks
 }
 
+faint() {
+  document.querySelector('#battleDialogueBox').innerHTML = `${this.name} foi derrotado e desmaiou!`
+  gsap.to(this.position, {
+    y: this.position.y + 20
+  })
+  gsap.to(this, {
+    opacity: 0
+  })
+}
+
 //If I need to create animation in succession directly after one but not at the same time I have to use gsap timeline.
 attack({ attack, recipient, renderedSprites }){
   document.querySelector('#battleDialogueBox').style.display = 'block'
   document.querySelector('#battleDialogueBox').innerHTML = `${this.name} usou ${attack.name} e causou ${attack.damage} de dano ${attack.type}.` 
 
-  this.health -= attack.damage
+  recipient.health -= attack.damage
 
   let whosHealthbar = '#enemyGreenHealthBar'
   if(this.isEnemy) whosHealthbar = '#playerGreenHealthBar'
@@ -123,7 +133,7 @@ attack({ attack, recipient, renderedSprites }){
         onComplete: () => {
           //Enemy actually gets hit
           gsap.to(whosHealthbar, {
-            width: this.health + '%'
+            width: recipient.health + '%'
          })
   
           gsap.to(recipient.position, {
@@ -163,7 +173,7 @@ attack({ attack, recipient, renderedSprites }){
           onComplete: () => {
           //Enemy actually gets hit
           gsap.to(whosHealthbar, {
-            width: this.health + '%'
+            width: recipient.health + '%'
           })
   
           gsap.to(recipient.position, {
