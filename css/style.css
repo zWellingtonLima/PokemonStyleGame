@@ -28,8 +28,17 @@ h1{
   left: 0;
   bottom: 0;
   pointer-events: none;
-  z-index: 2;
+  z-index: 3;
 }
+
+canvas{
+  /* position: absolute;
+   top: 50%; 
+  left: 50%;
+  transform: translate(-50%, -50%);  */
+  border-radius: 10px;
+  cursor: url(../img/pokebola.png), default;
+} 
 
 #enemyHealthBar{
   background-color: white;
@@ -69,15 +78,6 @@ h1{
   height: 7px; 
   margin-top: 10px; 
 }
-
-  canvas{
-  /* position: absolute;
-   top: 50%; 
-  left: 50%;
-  transform: translate(-50%, -50%);  */
-  border-radius: 10px;
-  cursor: url(../img/pokebola.png), default;
-} 
 
 #battleDialogueBox{
   position: absolute;

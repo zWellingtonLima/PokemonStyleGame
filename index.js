@@ -184,7 +184,7 @@ if(battle.initiated) return
       }) &&
       overlappingArea > (playerSprite.width * playerSprite.height) / 2
       &&
-      Math.random() > .5
+      Math.random() > .97
       ){
         window.cancelAnimationFrame(animationId)
        //deactivate current animation loop
@@ -200,6 +200,7 @@ if(battle.initiated) return
                 duration: .4,
                 onComplete(){
                   //activate a new animation loop
+                  initBattle()
                   animateBattle()
                   gsap.to('#battleTransitionBlack', {
                     opacity: 0,

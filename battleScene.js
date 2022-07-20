@@ -1,4 +1,3 @@
-
 const battleBackgroundImage  = new Image()
 battleBackgroundImage.src = './img/battleBackground.png'
 const battleBackground = new Sprite({
@@ -9,24 +8,36 @@ const battleBackground = new Sprite({
   image: battleBackgroundImage,
 })
 
-const emby = new Pokemons(pokemons.Emby)
-const draggle = new Pokemons(pokemons.Draggle)
+let emby
+let draggle
+let queue
+let battleAnimationId
 
 // To put fireball behind emby changing the z-index through array methods.
-const renderedSprites = [draggle, emby]
+let renderedSprites
 
-//Creates a versatile button generator using the data associate with each attack that pokemon may have.
-emby.attacks.forEach((attack) => {
-  const button = document.createElement('button')
-  button.innerHTML = attack.name
-  document.querySelector('#attacksMenu').append(button)
-})
+function initBattle() {
+  document.querySelector('#battleDisplay').style.display ='block'
+  document.querySelector('#battleDialogueBox').style.display ='none'
+  document.querySelector('#enemyGreenHealthBar').style.width ='100%'
+  document.querySelector('#playerGreenHealthBar').style.width ='100%'
+  document.querySelector('#attacksMenu').replaceChildren()
 
-const queue = []
+  emby = new Pokemons(pokemons.Emby)
+  draggle = new Pokemons(pokemons.Draggle)
+  renderedSprites = [draggle, emby]
+  queue = []
 
-//Our event listeners for our buttons (attack)
+  //Creates a versatile button generator using the data associate with each attack that pokemon may have.
+  emby.attacks.forEach((attack) => {
+    const button = document.createElement('button')
+    button.innerHTML = attack.name
+    document.querySelector('#attacksMenu').append(button)
+  })
+
+  //Our event listeners for our buttons (attack)
 document.querySelectorAll('button').forEach((button) => {
-  button.addEventListener('click', (e) => {
+    button.addEventListener('click', (e) => {
     //This way is faster than loop an array because it chooses directly inside the attacks object why I'm looking for after clicking on attack button.
     const selectedAttack = attacks[e.currentTarget.innerHTML]
     emby.attack({
@@ -39,6 +50,23 @@ document.querySelectorAll('button').forEach((button) => {
       queue.push(() => {
         draggle.faint()
       })
+      queue.push(() => {
+      //Fade back to black
+        gsap.to('#battleTransitionBlack', { 
+          opacity: 1,
+          onComplete: () => {
+            cancelAnimationFrame(battleAnimationId)
+            animate()
+            document.querySelector('#battleDisplay').style.display = 'none'
+
+            gsap.to('#battleTransitionBlack', {
+              opacity: 0
+            })
+
+            battle.initiated = false
+          }
+        })
+      })
     }
 
     //Enemy Ramdom Attack here
@@ -50,13 +78,31 @@ document.querySelectorAll('button').forEach((button) => {
         recipient: emby,
         renderedSprites
       })
-    })
+    
 
     if(emby.health <= 0){
       queue.push(() => {
         emby.faint()
       })
+      
+      queue.push(() => {
+        gsap.to('#battleTransitionBlack', { 
+          opacity: 1,
+          onComplete: () => {
+            cancelAnimationFrame(battleAnimationId)
+            animate()
+            document.querySelector('#battleDisplay').style.display = 'none'
+
+            gsap.to('#battleTransitionBlack', {
+              opacity: 0
+            })
+
+            battle.initiated = false
+          }
+        })
+      })
     }
+   })
   })
 
   button.addEventListener('mouseenter', (e) => {
@@ -70,9 +116,10 @@ document.querySelectorAll('button').forEach((button) => {
     document.querySelector('#attackTypeText').style.color = 'black'
   })
 })
+}
 
 function animateBattle(){
-  requestAnimationFrame(animateBattle)
+  battleAnimationId = window.requestAnimationFrame(animateBattle)
   battleBackground.draw()
 
   renderedSprites.forEach((sprite) => {
@@ -88,8 +135,7 @@ document.querySelector('#battleDialogueBox').addEventListener('click', (e) => {
   } else e.currentTarget.style.display = 'none'
 })
 
-
-
+initBattle()
 animateBattle()
 // const battleDialogueBox = document.querySelector('#battleDialogueBox')
 // battleDialogueBox.addEventListener('click', () => {
