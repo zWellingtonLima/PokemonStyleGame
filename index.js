@@ -145,6 +145,60 @@ function animate(){
   boundaryTest.draw()
   playerSprite.draw()
   
+  let moving = true
+  playerSprite.animate = false
+//A optimized way to do this is copy in each key.pressed individually. 
+// Activate a battle
+if(battle.initiated) return
+  if(keys.w.pressed || keys.s.pressed || keys.d.pressed || keys.a.pressed){
+    for (let i = 0; i < battleZones.length; i++) {
+      const battleZone = battleZones[i]
+      const overlappingArea = 
+      (Math.min(playerSprite.position.x + playerSprite.width, battleZone.position.x + battleZone.width) -
+      Math.max(playerSprite.position.x, battleZone.position.x)) *
+      (Math.min(playerSprite.position.y + playerSprite.height, battleZone.position.y + battleZone.height) -
+      Math.max(playerSprite.position.y, battleZone.position.y))
+      if(
+        rectangularCollision({
+        rectangle1: playerSprite,
+        rectangle2: battleZone
+      }) &&
+      overlappingArea > (playerSprite.width * playerSprite.height) / 2
+      &&
+      Math.random() > .97
+      ){
+        window.cancelAnimationFrame(animationId)
+        audio.Map.stop()
+        audio.InitBattle.play()
+        audio.Battle.play()
+       //deactivate current animation loop
+        battle.initiated = true
+          gsap.to('#battleTransitionBlack', {
+            opacity: 1,
+            repeat: 3,
+            yoyo: true,
+            duration: 0.4,
+            onComplete(){
+              gsap.to('#battleTransitionBlack', {
+                opacity: 1,
+                duration: .4,
+                onComplete(){
+                  //activate a new animation loop
+                  initBattle()
+                  animateBattle()
+                  gsap.to('#battleTransitionBlack', {
+                    opacity: 0,
+                    duration: .4
+                  })
+                }
+              })
+            }
+          })
+        break
+        } 
+    }
+  }
+
 //This if statement only works if player object exists. At first, we only drew our player using c.drawImage() method.
   if(playerSprite.position.x + playerSprite.width >= boundaryTest.position.x &&
     playerSprite.position.x + playerSprite.width <=  boundaryTest.position.x + boundaryTest.width){
@@ -199,6 +253,7 @@ window.addEventListener('keydown', (e) => {
       break
   }
 })
+animate()
 
 //It's necessary put back on keys up to false when they're released.
 window.addEventListener('keyup', (e) => {
@@ -219,4 +274,11 @@ window.addEventListener('keyup', (e) => {
       keys.s.pressed = false
       break
   }
+})
+
+let clicked = false
+window.addEventListener('click', () => {
+  if(!clicked)
+  audio.Map.play()
+  clicked = true
 })
