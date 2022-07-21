@@ -82,13 +82,16 @@ constructor({
     animate,
     rotation,
   })
-  this.health = 250
+  this.health = 100
   this.isEnemy = isEnemy
   this.name = name
   this.attacks = attacks
 }
 
 faint() {
+  audio.battle.stop()
+  audio.victory.play()
+
   document.querySelector('#battleDialogueBox').innerHTML = `${this.name} foi derrotado e desmaiou!`
   gsap.to(this.position, {
     y: this.position.y + 20
@@ -115,6 +118,7 @@ attack({ attack, recipient, renderedSprites }){
 
   switch(attack.name) {
     case 'Fireball':
+      audio.initFireball.play()
       let rotation = 1.5
       if(this.isEnemy) rotation = -2.5
       const fireballImage = new Image()
@@ -139,6 +143,7 @@ attack({ attack, recipient, renderedSprites }){
         y: recipient.position.y,
         onComplete: () => {
           //Enemy actually gets hit
+          audio.fireballHit.play()
           gsap.to(whosHealthbar, {
             width: recipient.health + 'px'
          })
@@ -179,6 +184,7 @@ attack({ attack, recipient, renderedSprites }){
         duration: .15,
           onComplete: () => {
           //Enemy actually gets hit
+          audio.tackleHit.play()
           gsap.to(whosHealthbar, {
             width: recipient.health + 'px'
           })
@@ -220,7 +226,7 @@ class Boundary {
   }
 
   draw(){
-    c.fillStyle = 'red'
+    c.fillStyle =  'rgba(0, 0, 0, 0)'
     c.fillRect(this.position.x, this.position.y, this.width, this.height)
   }
 }

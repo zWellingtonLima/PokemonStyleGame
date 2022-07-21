@@ -189,6 +189,8 @@ if(battle.initiated) return
         window.cancelAnimationFrame(animationId)
        //deactivate current animation loop
         battle.initiated = true
+        audio.map.stop()
+        audio.initBattle.play()
           gsap.to('#battleTransitionBlack', {
             opacity: 1,
             repeat: 3,
@@ -210,6 +212,7 @@ if(battle.initiated) return
               })
             }
           })
+        audio.battle.play()
         break
         } 
     }
@@ -342,7 +345,7 @@ window.addEventListener('keydown', (e) => {
       break
   }
 })
-//animate()
+animate()
 
 //It's necessary put back on keys up to false when they're released.
 window.addEventListener('keyup', (e) => {
@@ -362,5 +365,13 @@ window.addEventListener('keyup', (e) => {
     case 's':
       keys.s.pressed = false
       break
+  }
+})
+
+let clicked = false
+window.addEventListener('click', () => {
+  if(!clicked){
+    audio.map.play()
+    clicked = true
   }
 })

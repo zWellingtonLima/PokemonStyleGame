@@ -40,6 +40,10 @@ canvas{
   cursor: url(../img/pokebola.png), default;
 } 
 
+#battleDisplay{
+  display: none;
+}
+
 #enemyHealthBar{
   background-color: white;
   width: 250px;

@@ -64,6 +64,8 @@ document.querySelectorAll('button').forEach((button) => {
             })
 
             battle.initiated = false
+            audio.battle.stop()
+            audio.map.play()
           }
         })
       })
@@ -98,6 +100,8 @@ document.querySelectorAll('button').forEach((button) => {
             })
 
             battle.initiated = false
+            audio.battle.stop()
+            audio.map.play()
           }
         })
       })
@@ -135,8 +139,8 @@ document.querySelector('#battleDialogueBox').addEventListener('click', (e) => {
   } else e.currentTarget.style.display = 'none'
 })
 
-initBattle()
-animateBattle()
+// initBattle()
+// animateBattle()
 // const battleDialogueBox = document.querySelector('#battleDialogueBox')
 // battleDialogueBox.addEventListener('click', () => {
 //   battleDialogueBox.style.display = 'none'
