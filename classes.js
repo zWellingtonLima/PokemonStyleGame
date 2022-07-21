@@ -145,7 +145,7 @@ attack({ attack, recipient, renderedSprites }){
           //Enemy actually gets hit
           audio.fireballHit.play()
           gsap.to(whosHealthbar, {
-            width: recipient.health + 'px'
+            width: recipient.health + '%'
          })
   
           gsap.to(recipient.position, {
@@ -186,7 +186,7 @@ attack({ attack, recipient, renderedSprites }){
           //Enemy actually gets hit
           audio.tackleHit.play()
           gsap.to(whosHealthbar, {
-            width: recipient.health + 'px'
+            width: recipient.health + '%'
           })
   
           gsap.to(recipient.position, {

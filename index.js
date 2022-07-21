@@ -29,11 +29,11 @@ const offSet = {
 
 collisionsMap.forEach((row, index) => {
   row.forEach((symbol, index2) => {
-    if(symbol === 1026)
+    if(symbol === 1025)
     boundaries.push( new Boundary({
       position: {
         x: index2 * Boundary.width + offSet.x,
-        y: index * Boundary.height + offSet.y - 55 
+        y: index * Boundary.height + offSet.y //- 55 
       }
     }))
   })
