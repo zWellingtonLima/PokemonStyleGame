@@ -57,6 +57,8 @@ backgroundImage.src = './img/PelletTown.png'
 
 const foregroundImage = new Image()
 foregroundImage.src = './img/foreground.png'
+const foregroundImage1 = new Image()
+foregroundImage1.src = './img/foreground1.png'
 
 const playerImageDown = new Image()
 playerImageDown.src = './img/playerDown.png'
@@ -78,6 +80,14 @@ const backgroundMain = new Sprite({
   image: backgroundImage,
 })
 
+const foreground1 = new Sprite({
+  position: {
+    x: offSet.x,
+    y: offSet.y
+  },
+  image: foregroundImage1
+})
+
 const foreground = new Sprite({
   position: {
     x: offSet.x,
@@ -85,6 +95,7 @@ const foreground = new Sprite({
   },
   image: foregroundImage
 })
+
 
 const playerSprite = new Sprite({
   position: {
@@ -136,7 +147,7 @@ const keys = {
 }
 
 //It's easier to add one 'movable' here than add each new item movable inside if(key.pressed).
-const movables = [backgroundMain, ...boundaries, foreground, bulbasaurSprite, ...battleZones]
+const movables = [backgroundMain, ...boundaries, foreground1, foreground, bulbasaurSprite, ...battleZones]
 //Animate function creates an infinite loop to catch all frames and movements our player does. So, we need to move drawImage to the function.
 function rectangularCollision({rectangle1, rectangle2 }){
   return (
@@ -184,7 +195,7 @@ if(battle.initiated) return
       }) &&
       overlappingArea > (playerSprite.width * playerSprite.height) / 2
       &&
-      Math.random() > .97
+      Math.random() > .98
       ){
         window.cancelAnimationFrame(animationId)
        //deactivate current animation loop
