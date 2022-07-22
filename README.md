@@ -4,4 +4,6 @@
  
  https://zwellingtonlima.github.io/PokemonStyleGame/
  
- There are two battle areas with darker green grass. To begin a battle just walk on it. 
+ Obs:
+ 1 - There are two battle areas with darker green grass. To begin a battle just walk on it. 
+ 2 - Bulbasaur aren't any functionality yet.
