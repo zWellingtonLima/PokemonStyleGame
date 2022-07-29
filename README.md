@@ -1,6 +1,7 @@
 # PokemonStyleGame
  A Pokemon Style Game  made in Browser
  To access use this link and have fun!
+Obs: Only works using a keyboard.
  
  https://zwellingtonlima.github.io/PokemonStyleGame/
  
